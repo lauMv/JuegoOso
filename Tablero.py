@@ -9,8 +9,12 @@ class Tablero(Entorno):
 
     def __init__(self, h=8, v=8):
         Entorno.__init__(self)
-        movidas = [(x, y, ficha) for x in range(1, h + 1) for y in range(1, v + 1) for ficha in "OS"]
-        self.juegoActual = ElEstado(jugador='A', ficha='S', get_utilidad=0, tablero={}, movidas=movidas)
+        
+        movidasConS = [(x, y,'S') for x in range(1, h + 1) for y in range(1, v + 1)]
+        movidasConO = [(x, y,'O') for x in range(1, h + 1) for y in range(1, v + 1)]
+        movidas = movidasConS + movidasConO
+
+        self.juegoActual = ElEstado(jugador='A', get_utilidad=0, tablero={}, movidas=movidas)
         self.ancho = 600
         self.alto = 600
         pg.init()
@@ -30,15 +34,18 @@ class Tablero(Entorno):
         agente.mostrar(self.juegoActual)
         print("Utilidad ", self.juegoActual.get_utilidad)
 
-    def iniciar_pantalla(self):
-        color_linea = (0, 0, 0)
-        self.ventana.fill((255, 255, 255))
+    def mostrar_opciones(self):
         op_x_img = pg.image.load("img/X_modified.png")
         op_y_img = pg.image.load("img/o_modified.png")
         op_x_img = pg.transform.scale(op_x_img, (50, 50))
         op_y_img = pg.transform.scale(op_y_img, (60, 60))
         self.ventana.blit(op_x_img, (620, 200))
         self.ventana.blit(op_y_img, (620, 400))
+
+    def iniciar_pantalla(self):
+        color_linea = (0, 0, 0)
+        self.ventana.fill((255, 255, 255))
+        self.mostrar_opciones()
         # lineas verticales
         pg.draw.line(self.ventana, color_linea, (self.ancho / 8, 0), (self.ancho / 8, self.alto), 7)
         pg.draw.line(self.ventana, color_linea, (self.ancho / 8 * 2, 0), (self.ancho / 8 * 2, self.alto), 7)
@@ -57,7 +64,7 @@ class Tablero(Entorno):
         pg.draw.line(self.ventana, color_linea, (0, self.alto / 8 * 6), (self.ancho, self.alto / 8 * 6), 7)
         pg.draw.line(self.ventana, color_linea, (0, self.alto / 8 * 7), (self.ancho, self.alto / 8 * 7), 7)
 
-    def marcar(self, row, col, jugador):
+    def marcar(self, row, col, ficha, jugador):
         x_img = pg.image.load("img/X_modified.png")
         y_img = pg.image.load("img/o_modified.png")
         x_img = pg.transform.scale(x_img, (80, 80))
@@ -101,20 +108,25 @@ class Tablero(Entorno):
             self.ventana.blit(o_img, (posy, posx))
         pg.display.update()
 
-    def accion_humano(self, age):
+    def seleccionar_opcion(self):
         mouse = pg.mouse.get_pos()
-        ficha = "O"
+        ficha = 'O'
         op_x_selected = pg.image.load('img/X_modified_selected.png')
         op_y_selected = pg.image.load('img/o_modified_selected.png')
         op_x_selected = pg.transform.scale(op_x_selected, (50, 50))
-        op_yop_y_selected_img = pg.transform.scale(op_y_selected, (60, 60))
-        if 620 + 50 > mouse[0] > 620 and 200 + 50 > mouse[1] > 200:         
+        op_y_selected = pg.transform.scale(op_y_selected, (60, 60))
+        if event.type is MOUSEBUTTONDOWN and (620 + 50 > x > 620 and 200 + 50 > y > 200):          
             self.ventana.blit(op_x_selected, (620, 200))
-            ficha = "X"
-        if 620 + 60 > mouse[0] > 620 and 400 + 60 > mouse[1] > 400:         
+            ficha = 'X'
+        if event.type is MOUSEBUTTONDOWN and (620 + 60 > x > 620 and 400 + 60 > y > 400):       
             self.ventana.blit(op_y_selected, (620, 400))
-            ficha = "O"
+            ficha = 'O'
+        
+        print(ficha)
+        return ficha
 
+
+    def accion_humano(self, age, ficha):
         x, y = pg.mouse.get_pos()
         # obtener columna del click
         if x < self.ancho / 8:
@@ -155,28 +167,58 @@ class Tablero(Entorno):
         else:
             fila = None
         # acciones del agente humano = fila columna seleccionada
-        age.acciones = fila, columna
+        age.acciones = fila, columna, ficha
 
     def run(self):
         self.iniciar_pantalla()
         actual = 0
         fps = 30
+        ficha = 'O'
         tiempo = pg.time.Clock()
         victoriaXImg = pg.image.load('img/victoriaX.png')
         victoriaOImg = pg.image.load('img/victoriaO.png')
         victoriaEmpate = pg.image.load('img/victoriaEmpate.png')
+
+        op_x_selected = pg.image.load('img/X_modified_selected.png')
+        op_y_selected = pg.image.load('img/o_modified_selected.png')
+        op_x_selected = pg.transform.scale(op_x_selected, (50, 50))
+        op_y_selected = pg.transform.scale(op_y_selected, (60, 60))
+
+        #
+        op_x_img = pg.image.load("img/X_modified.png")
+        op_y_img = pg.image.load("img/o_modified.png")
+        op_x_img = pg.transform.scale(op_x_img, (50, 50))
+        op_y_img = pg.transform.scale(op_y_img, (60, 60))
+        #
+
+        self.mostrar_opciones()
+
         while True:
             for event in pg.event.get():
+                x, y = pg.mouse.get_pos()
                 if event.type == QUIT:
                     pg.quit()
                     sys.exit()
                 if self.agentes[actual].__class__.__name__ == "HumanoOso":
                     #controla ficha elegida
-                    if event.type is MOUSEBUTTONDOWN:
+                    # ficha = self.seleccionar_opcion()
+                    if event.type is MOUSEBUTTONDOWN and (620 + 50 > x > 620 and 200 + 50 > y > 200):
+                        self.ventana.blit(op_x_selected, (620, 200))
+                        self.ventana.blit(op_y_img, (620, 400))
+                        ficha = 'X'
+            
+                    if event.type is MOUSEBUTTONDOWN and (620 + 60 > x > 620 and 400 + 60 > y > 400):         
+                        self.ventana.blit(op_y_selected, (620, 400))
+                        self.ventana.blit(op_x_img, (620, 200))
+                        ficha = 'O'
+
+                    print (ficha + " opcion seleccionada")
+                    if event.type is MOUSEBUTTONDOWN and (0 <= x < self.ancho and 0 <= y < self.alto):
                         print("juega humano")
                         self.agentes[actual].estado = self.juegoActual
                         if self.agentes[actual].estado.movidas:
-                            self.accion_humano(self.agentes[actual])
+                            print(ficha + "dentro de humano")
+                            self.accion_humano(self.agentes[actual],ficha)
                         if self.agentes[actual].testTerminal(self.agentes[actual].getResultado(self.juegoActual, self.agentes[actual].acciones)):
                             self.agentes[actual].vive = False
                         self.ejecutar(self.agentes[actual])
@@ -187,8 +229,8 @@ class Tablero(Entorno):
                     actual = 0
                     print("juega maquina")
             tablero = self.juegoActual.tablero
-            for x, y in tablero.keys():
-                self.marcar(x, y, tablero.get((x, y)))
+            for x, y,ficha in tablero.keys():
+                self.marcar(x, y,ficha, tablero.get((x, y)))
             if self.finalizado():
                 a = self.juegoActual.get_utilidad
                 if a != 0:
