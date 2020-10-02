@@ -9,12 +9,12 @@ class Tablero(Entorno):
 
     def __init__(self, h=8, v=8):
         Entorno.__init__(self)
-        movidas = [(x, y) for x in range(1, h + 1) for y in range(1, v + 1)]
+        movidas = [(x, y, ficha) for x in range(1, h + 1) for y in range(1, v + 1) for ficha in "OS"]
         self.juegoActual = ElEstado(jugador='A', ficha='S', get_utilidad=0, tablero={}, movidas=movidas)
-        self.ancho = 700
-        self.alto = 700
+        self.ancho = 600
+        self.alto = 600
         pg.init()
-        self.ventana = pg.display.set_mode((self.ancho, self.alto + 100), 0, 32)
+        self.ventana = pg.display.set_mode((self.ancho + 100, self.alto + 100), 0, 32)
         pg.display.set_caption("Sistemas Inteligentes - Juego Oso")
 
     def percibir(self, agente):
@@ -33,6 +33,12 @@ class Tablero(Entorno):
     def iniciar_pantalla(self):
         color_linea = (0, 0, 0)
         self.ventana.fill((255, 255, 255))
+        op_x_img = pg.image.load("img/X_modified.png")
+        op_y_img = pg.image.load("img/o_modified.png")
+        op_x_img = pg.transform.scale(op_x_img, (50, 50))
+        op_y_img = pg.transform.scale(op_y_img, (60, 60))
+        self.ventana.blit(op_x_img, (620, 200))
+        self.ventana.blit(op_y_img, (620, 400))
         # lineas verticales
         pg.draw.line(self.ventana, color_linea, (self.ancho / 8, 0), (self.ancho / 8, self.alto), 7)
         pg.draw.line(self.ventana, color_linea, (self.ancho / 8 * 2, 0), (self.ancho / 8 * 2, self.alto), 7)
@@ -96,6 +102,19 @@ class Tablero(Entorno):
         pg.display.update()
 
     def accion_humano(self, age):
+        mouse = pg.mouse.get_pos()
+        ficha = "O"
+        op_x_selected = pg.image.load('img/X_modified_selected.png')
+        op_y_selected = pg.image.load('img/o_modified_selected.png')
+        op_x_selected = pg.transform.scale(op_x_selected, (50, 50))
+        op_yop_y_selected_img = pg.transform.scale(op_y_selected, (60, 60))
+        if 620 + 50 > mouse[0] > 620 and 200 + 50 > mouse[1] > 200:         
+            self.ventana.blit(op_x_selected, (620, 200))
+            ficha = "X"
+        if 620 + 60 > mouse[0] > 620 and 400 + 60 > mouse[1] > 400:         
+            self.ventana.blit(op_y_selected, (620, 400))
+            ficha = "O"
+
         x, y = pg.mouse.get_pos()
         # obtener columna del click
         if x < self.ancho / 8:
