@@ -10,7 +10,7 @@ class Tablero(Entorno):
     def __init__(self, h=8, v=8):
         Entorno.__init__(self)
         movidas = [(x, y) for x in range(1, h + 1) for y in range(1, v + 1)]
-        self.juegoActual = ElEstado(jugador='X', ficha='O', get_utilidad=0, tablero={}, movidas=movidas)
+        self.juegoActual = ElEstado(jugador='A', ficha='S', get_utilidad=0, tablero={}, movidas=movidas)
         self.ancho = 700
         self.alto = 700
         pg.init()
@@ -60,36 +60,36 @@ class Tablero(Entorno):
         if row == 1:
             posx = 30
         if row == 2:
-            posx = self.ancho / 8 + 30
+            posx = self.ancho / 8 
         if row == 3:
-            posx = self.ancho / 8 * 2 + 30
+            posx = self.ancho / 8 * 2 
         if row == 4:
-            posx = self.ancho / 8 * 3 + 30
+            posx = self.ancho / 8 * 3 
         if row == 5:
-            posx = self.ancho / 8 * 4 + 30
+            posx = self.ancho / 8 * 4 
         if row == 6:
-            posx = self.ancho / 8 * 5 + 30
+            posx = self.ancho / 8 * 5 
         if row == 7:
-            posx = self.ancho / 8 * 6 + 30
+            posx = self.ancho / 8 * 6 
         if row == 8:
-            posx = self.ancho / 8 * 7 + 30
+            posx = self.ancho / 8 * 7 
         if col == 1:
             posy = 30
         if col == 2:
-            posy = self.alto / 8 + 30
+            posy = self.alto / 8 
         if col == 3:
-            posy = self.alto / 8 * 2 + 30
+            posy = self.alto / 8 * 2
         if col == 4:
-            posy = self.alto / 8 * 3 + 30
+            posy = self.alto / 8 * 3 
         if col == 5:
-            posy = self.alto / 8 * 4 + 30
+            posy = self.alto / 8 * 4 
         if col == 6:
-            posy = self.alto / 8 * 5 + 30
+            posy = self.alto / 8 * 5 
         if col == 7:
-            posy = self.alto / 8 * 6 + 30
+            posy = self.alto / 8 * 6 
         if col == 8:
-            posy = self.alto / 8 * 7 + 30
-        if jugador == 'X':
+            posy = self.alto / 8 * 7 
+        if jugador == 'B':
             self.ventana.blit(x_img, (posy, posx))
         else:
             self.ventana.blit(o_img, (posy, posx))
@@ -154,6 +154,7 @@ class Tablero(Entorno):
                 if self.agentes[actual].__class__.__name__ == "HumanoOso":
                     #controla ficha elegida
                     if event.type is MOUSEBUTTONDOWN:
+                        print("juega humano")
                         self.agentes[actual].estado = self.juegoActual
                         if self.agentes[actual].estado.movidas:
                             self.accion_humano(self.agentes[actual])
@@ -165,6 +166,7 @@ class Tablero(Entorno):
                     self.percibir(self.agentes[actual])
                     self.ejecutar(self.agentes[actual])
                     actual = 0
+                    print("juega maquina")
             tablero = self.juegoActual.tablero
             for x, y in tablero.keys():
                 self.marcar(x, y, tablero.get((x, y)))

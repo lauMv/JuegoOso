@@ -57,8 +57,9 @@ class AgenteJugador(Agente):
             for a in self.jugadas(e):
                 v = min(v, valorMax(self.getResultado(e, a)))
             return v
-
-        return max(self.jugadas(estado), key=lambda a: valorMin(self.getResultado(estado, a)))
+        aux = max(self.jugadas(estado), key=lambda a: valorMin(self.getResultado(estado, a)))
+        print("aux")
+        return aux
 
     def podaAlphaBeta(self, estado, juego):
         jugador = estado.jugador

@@ -2,7 +2,7 @@ from AgenteOso import AgenteOso
 from Tablero import Tablero
 from HumanoOso import HumanoOso
 
-luis = AgenteOso()
+luis = HumanoOso()
 juan = HumanoOso()
 # juan = AgenteOso()
 
