@@ -25,7 +25,9 @@ class Tablero(Entorno):
         agente.estado = self.juegoActual
         if agente.estado.movidas:
             agente.programa()
-        if agente.testTerminal(agente.getResultado(self.juegoActual, agente.acciones)):
+        estado = agente.getResultado(self.juegoActual, agente.acciones)
+        
+        if agente.testTerminal(estado):
             agente.vive = False
 
     def ejecutar(self, agente):
@@ -192,32 +194,42 @@ class Tablero(Entorno):
                         self.ventana.blit(op_y_img, (620, 400))
                         self.ventana.blit(op_x_selected, (620, 200))
                         ficha = 'S'
-            
+                    
                     if event.type is MOUSEBUTTONDOWN and (0 <= x < self.ancho and 0 <= y < self.alto):
                         self.agentes[actual].estado = self.juegoActual
-                        if self.agentes[actual].estado.movidas:
+                        if self.agentes[actual].estado.movidas :
                             self.accion_humano(self.agentes[actual],ficha)
                             print (self.agentes[actual].estado.cantidad_osos)
-                        if self.agentes[actual].testTerminal(self.agentes[actual].getResultado(self.juegoActual, self.agentes[actual].acciones)):
-                            self.agentes[actual].vive = False
-                        self.ejecutar(self.agentes[actual])
-                        actual = 1
+                        estado = self.agentes[actual].getResultado(self.juegoActual, self.agentes[actual].acciones)
+                        if estado != None:
+                            if self.agentes[actual].testTerminal(estado):
+                                self.agentes[actual].vive = False
+                            self.ejecutar(self.agentes[actual])
+                            actual = 1
+                    else :
+                        actual = 0
                 else:
                     self.percibir(self.agentes[actual])
                     self.ejecutar(self.agentes[actual])
                     actual = 0
             tablero = self.juegoActual.tablero
+            cant_osos_A = self.agentes[0].estado.cantidad_osos
+            cant_osos_B = self.agentes[1].estado.cantidad_osos
             for x, y in tablero.keys():
                 self.marcar(x, y,ficha, tablero.get((x, y)))
+
             if self.finalizado():
-                print("osos " + self.agentes[actual].estado.cantidad_osos)
-                if self.agentes[0].estado.cantidad_osos > self.agentes[1].estado.cantidad_osos :
+                if cant_osos_A > cant_osos_B :
+                        print("osos " + str(self.agentes[0].estado.cantidad_osos))
                         self.ventana.blit(victoriaXImg, (400, 250))
                         print("Victoria " + self.agentes[0].estado.jugador)
-                else:
+                elif cant_osos_B > cant_osos_A:
                         self.ventana.blit(victoriaOImg, (400, 250))
+                        print("osos " + str(self.agentes[1].estado.cantidad_osos))
                         print("Victoria " + self.agentes[1].estado.jugador)
-                if self.agentes[0].estado.cantidad_osos == self.agentes[1].estado.cantidad_osos :
+                else :
+                    print("osos B " + str(self.agentes[1].estado.cantidad_osos))
+                    print("osos A" + str(self.agentes[0].estado.cantidad_osos))
                     self.ventana.blit(victoriaEmpate, (400, 250))
                     print("Empate" + self.juegoActual.jugador)
                 pg.quit()

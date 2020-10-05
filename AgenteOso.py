@@ -38,14 +38,15 @@ class AgenteOso(AgenteJugador):
                             get_utilidad=utilidad2,
                             tablero=tablero, movidas=movidas)
         else:
-            print("jugada invalida")
+            print("JUGADA INVALIDA")
+            return None
 
     def get_utilidad(self, estado, jugador):
         return estado.get_utilidad if jugador == 'B' else -estado.get_utilidad
 
     def testTerminal(self, estado):
-        #print("testTerminal "+ str(len(estado.movidas)))
-        return (len(estado.movidas) - (self.h*self.v) + 1) == 0 
+        if estado != None:
+            return (len(estado.movidas) - (self.h*self.v)) == 0 
 
     def mostrar(self, estado):
         tablero = estado.tablero

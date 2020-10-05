@@ -36,8 +36,8 @@ class AgenteJugador(Agente):
     def programa(self):
 
         # self.acciones = self.minimax(self.estado, self.estado.jugador)
-        # self.acciones = self.minimax(self.estado, self.estado.jugador)
-        self.acciones = self.podaAlphaBeta(self.estado, self.estado.jugador)
+        self.acciones = self.minimax(self.estado, self.estado.jugador)
+        # self.acciones = self.podaAlphaBeta(self.estado, self.estado.jugador)
 
     def minimax(self, estado, juego):
         jugador = estado.jugador
@@ -57,9 +57,10 @@ class AgenteJugador(Agente):
             for a in self.jugadas(e):
                 v = min(v, valorMax(self.getResultado(e, a)))
             return v
-        aux = max(self.jugadas(estado), key=lambda a: valorMin(self.getResultado(estado, a)))
-        print("aux")
-        return aux
+        # aux = max(self.jugadas(estado), key=lambda a: valorMin(self.getResultado(estado, a)))
+        # print("aux")
+        return max(self.jugadas(estado), key=lambda a: valorMin(self.getResultado(estado, a)))
+        # print("aux")
 
     def podaAlphaBeta(self, estado, juego):
         jugador = estado.jugador
