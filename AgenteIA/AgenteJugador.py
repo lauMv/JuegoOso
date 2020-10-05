@@ -10,7 +10,7 @@ from AgenteIA.Agente import Agente
 from collections import namedtuple
 
 
-ElEstado = namedtuple('ElEstado', 'jugador,cantidad_osos, get_utilidad, tablero, movidas')
+ElEstado = namedtuple('ElEstado', 'jugador, get_utilidad, tablero, movidas')
 
 
 class AgenteJugador(Agente):

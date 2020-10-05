@@ -14,7 +14,8 @@ class Tablero(Entorno):
         movidasConO = [(x, y,'O') for x in range(1, h + 1) for y in range(1, v + 1)]
         movidas = movidasConS + movidasConO
 
-        self.juegoActual = ElEstado(jugador='A',cantidad_osos = 0, get_utilidad=0, tablero={}, movidas=movidas)
+        self.cantidad_osos = 0
+        self.juegoActual = ElEstado(jugador='A', get_utilidad=0, tablero={}, movidas=movidas)
         self.ancho = 600
         self.alto = 600
         pg.init()
@@ -37,11 +38,11 @@ class Tablero(Entorno):
         print("Utilidad ", self.juegoActual.get_utilidad)
 
     def mostrar_opciones(self):
-        op_x_img = pg.image.load("img/X_modified.png")
-        op_y_img = pg.image.load("img/o_modified.png")
-        op_x_img = pg.transform.scale(op_x_img, (50, 50))
+        op_s_img = pg.image.load("img/s_modified.jpeg")
+        op_y_img = pg.image.load("img/o_modified.jpeg")
+        op_s_img = pg.transform.scale(op_s_img, (60, 60))
         op_y_img = pg.transform.scale(op_y_img, (60, 60))
-        self.ventana.blit(op_x_img, (620, 200))
+        self.ventana.blit(op_s_img, (620, 200))
         self.ventana.blit(op_y_img, (620, 400))
 
     def iniciar_pantalla(self):
@@ -56,7 +57,7 @@ class Tablero(Entorno):
         pg.draw.line(self.ventana, color_linea, (self.ancho / 8 * 5, 0), (self.ancho / 8 * 5, self.alto), 7)
         pg.draw.line(self.ventana, color_linea, (self.ancho / 8 * 6, 0), (self.ancho / 8 * 6, self.alto), 7)
         pg.draw.line(self.ventana, color_linea, (self.ancho / 8 * 7, 0), (self.ancho / 8 * 7, self.alto), 7)
-        pg.draw.line(self.ventana, color_linea, (self.ancho / 8 * 8, 0), (self.ancho / 8 * 8, self.alto), 7)
+        # pg.draw.line(self.ventana, color_linea, (self.ancho / 8 * 8, 0), (self.ancho / 8 * 8, self.alto), 7)
         # lineas horizontales
         pg.draw.line(self.ventana, color_linea, (0, self.alto / 8), (self.ancho, self.alto / 8), 7)
         pg.draw.line(self.ventana, color_linea, (0, self.alto / 8 * 2), (self.ancho, self.alto / 8 * 2), 7)
@@ -65,56 +66,60 @@ class Tablero(Entorno):
         pg.draw.line(self.ventana, color_linea, (0, self.alto / 8 * 5), (self.ancho, self.alto / 8 * 5), 7)
         pg.draw.line(self.ventana, color_linea, (0, self.alto / 8 * 6), (self.ancho, self.alto / 8 * 6), 7)
         pg.draw.line(self.ventana, color_linea, (0, self.alto / 8 * 7), (self.ancho, self.alto / 8 * 7), 7)
+        font = pg.font.SysFont(None, 25)
+        turno = font.render("Turno: A", True, (0, 0, 0))
+        self.ventana.blit(turno, [620,50])
 
     def marcar(self, row, col, ficha, jugador):
-        x_img = pg.image.load("img/X_modified.png")
-        y_img = pg.image.load("img/o_modified.png")
-        x_img = pg.transform.scale(x_img, (60, 60))
-        o_img = pg.transform.scale(y_img, (60, 60))
+        x_img = pg.image.load("img/s_modified.jpeg")
+        y_img = pg.image.load("img/o_modified.jpeg")
+        x_img = pg.transform.scale(x_img, (50, 50))
+        o_img = pg.transform.scale(y_img, (50, 50))
         posx, posy = 0, 0
         if row == 1:
-            posx = 0
+            posx = 0 + 10
         if row == 2:
-            posx = self.ancho / 8 
+            posx = self.ancho / 8 + 10
         if row == 3:
-            posx = self.ancho / 8 * 2 
+            posx = self.ancho / 8 * 2 + 10
         if row == 4:
-            posx = self.ancho / 8 * 3 
+            posx = self.ancho / 8 * 3 + 10
         if row == 5:
-            posx = self.ancho / 8 * 4 
+            posx = self.ancho / 8 * 4 + 10
         if row == 6:
-            posx = self.ancho / 8 * 5 
+            posx = self.ancho / 8 * 5 + 10
         if row == 7:
-            posx = self.ancho / 8 * 6 
+            posx = self.ancho / 8 * 6 + 10
         if row == 8:
-            posx = self.ancho / 8 * 7 
+            posx = self.ancho / 8 * 7 + 10
         if col == 1:
-            posy = 0
+            posy = 0+ 10
         if col == 2:
-            posy = self.alto / 8 
+            posy = self.alto / 8 + 10
         if col == 3:
-            posy = self.alto / 8 * 2
+            posy = self.alto / 8 * 2+ 10
         if col == 4:
-            posy = self.alto / 8 * 3 
+            posy = self.alto / 8 * 3 + 10
         if col == 5:
-            posy = self.alto / 8 * 4 
+            posy = self.alto / 8 * 4 + 10
         if col == 6:
-            posy = self.alto / 8 * 5 
+            posy = self.alto / 8 * 5 + 10
         if col == 7:
-            posy = self.alto / 8 * 6 
+            posy = self.alto / 8 * 6 + 10
         if col == 8:
-            posy = self.alto / 8 * 7 
-        if ficha == 'S':
+            posy = self.alto / 8 * 7 + 10
+        if jugador == 'S':
             self.ventana.blit(x_img, (posy, posx))
         else:
             self.ventana.blit(o_img, (posy, posx))
-        #pg.display.update()
+        
+        pg.display.update()
 
     def accion_humano(self, age, ficha):
         x, y = pg.mouse.get_pos()
         # obtener columna del click
         if x < self.ancho / 8:
-            columna = 1
+            columna = 1 
         elif x < self.ancho / 8 * 2:
             columna = 2
         elif x < self.ancho / 8 * 3:
@@ -163,20 +168,18 @@ class Tablero(Entorno):
         victoriaOImg = pg.image.load('img/victoriaO.png')
         victoriaEmpate = pg.image.load('img/victoriaEmpate.png')
 
-        op_x_selected = pg.image.load('img/X_modified_selected.png')
+        op_s_selected = pg.image.load('img/s_modified_selected.png')
         op_y_selected = pg.image.load('img/o_modified_selected.png')
-        op_x_selected = pg.transform.scale(op_x_selected, (50, 50))
+        op_s_selected = pg.transform.scale(op_s_selected, (60, 60))
         op_y_selected = pg.transform.scale(op_y_selected, (60, 60))
 
-        #
-        op_x_img = pg.image.load("img/X_modified.png")
-        op_y_img = pg.image.load("img/o_modified.png")
-        op_x_img = pg.transform.scale(op_x_img, (50, 50))
+        op_s_img = pg.image.load("img/s_modified.jpeg")
+        op_y_img = pg.image.load("img/o_modified.jpeg")
+        op_s_img = pg.transform.scale(op_s_img, (60, 60))
         op_y_img = pg.transform.scale(op_y_img, (60, 60))
-        #
+        font = pg.font.SysFont(None, 25)
 
         self.mostrar_opciones()
-
         while True:
             for event in pg.event.get():
                 x, y = pg.mouse.get_pos()
@@ -186,22 +189,27 @@ class Tablero(Entorno):
                 if self.agentes[actual].__class__.__name__ == "HumanoOso":
 
                     if event.type is MOUSEBUTTONDOWN and (620 + 60 > x > 620 and 400 + 60 > y > 400):         
-                        self.ventana.blit(op_x_img, (620, 200))
+                        self.ventana.blit(op_s_img, (620, 200))
                         self.ventana.blit(op_y_selected, (620, 400))
                         ficha = 'O'
 
                     if event.type is MOUSEBUTTONDOWN and (620 + 50 > x > 620 and 200 + 50 > y > 200):
                         self.ventana.blit(op_y_img, (620, 400))
-                        self.ventana.blit(op_x_selected, (620, 200))
+                        self.ventana.blit(op_s_selected, (620, 200))
                         ficha = 'S'
                     
                     if event.type is MOUSEBUTTONDOWN and (0 <= x < self.ancho and 0 <= y < self.alto):
                         self.agentes[actual].estado = self.juegoActual
                         if self.agentes[actual].estado.movidas :
                             self.accion_humano(self.agentes[actual],ficha)
-                            print (self.agentes[actual].estado.cantidad_osos)
                         estado = self.agentes[actual].getResultado(self.juegoActual, self.agentes[actual].acciones)
                         if estado != None:
+                            self.cantidad_osos += estado.get_utilidad
+                            turno = font.render("Turno:   ", True, (0, 0, 0))
+                            self.ventana.blit(turno, [620,50])
+                            turno = font.render("Turno: " + self.agentes[actual].estado.jugador, True, (0, 0, 0))
+                            self.ventana.blit(turno, [620,50])
+                            pg.display.update()
                             if self.agentes[actual].testTerminal(estado):
                                 self.agentes[actual].vive = False
                             self.ejecutar(self.agentes[actual])
@@ -213,25 +221,20 @@ class Tablero(Entorno):
                     self.ejecutar(self.agentes[actual])
                     actual = 0
             tablero = self.juegoActual.tablero
-            cant_osos_A = self.agentes[0].estado.cantidad_osos
-            cant_osos_B = self.agentes[1].estado.cantidad_osos
             for x, y in tablero.keys():
                 self.marcar(x, y,ficha, tablero.get((x, y)))
-
             if self.finalizado():
-                if cant_osos_A > cant_osos_B :
-                        print("osos " + str(self.agentes[0].estado.cantidad_osos))
+                a = self.juegoActual.get_utilidad
+                ##cantidad de osos con utilidad
+                if self.cantidad_osos > 0 :
                         self.ventana.blit(victoriaXImg, (400, 250))
-                        print("Victoria " + self.agentes[0].estado.jugador)
-                elif cant_osos_B > cant_osos_A:
+                        print("Victoria B")
+                elif self.cantidad_osos < 0:
                         self.ventana.blit(victoriaOImg, (400, 250))
-                        print("osos " + str(self.agentes[1].estado.cantidad_osos))
-                        print("Victoria " + self.agentes[1].estado.jugador)
+                        print("Victoria A")
                 else :
-                    print("osos B " + str(self.agentes[1].estado.cantidad_osos))
-                    print("osos A" + str(self.agentes[0].estado.cantidad_osos))
                     self.ventana.blit(victoriaEmpate, (400, 250))
-                    print("Empate" + self.juegoActual.jugador)
+                    print("Empate")
                 pg.quit()
                 sys.exit()
             pg.display.update()
